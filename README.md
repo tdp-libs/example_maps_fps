@@ -26,6 +26,12 @@ mkdir ../build-maps_fps-desktop
 cd ../build-maps_fps-desktop
 cmake ../maps_fps
 make -j12
+
+```
+To run:
+```
+example_maps_fps/example_maps_fps
+
 ```
 
 ## QMake Build Instructions
@@ -34,3 +40,11 @@ To build and deploy the application using QtCreator perform the following steps.
 2. Select a kit.
 3. If appropriate set the number of jobs in Projects->Build->Build Steps->Make add something like -j12.
 4. Click the green arrow in the bottom left to build and run.
+
+# Modification
+
+This project is designed to be modified to suit your purposes, the following files configure the OpenGL view and load the models.
+```
+example_maps_fps/src/LoadModels.cpp
+example_maps_fps/src/main.cpp
+```

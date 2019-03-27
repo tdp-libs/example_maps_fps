@@ -24,6 +24,8 @@ int main()
   map.setBackgroundColor({0.0f, 0.0f, 0.0f});
 
   auto controller = new tp_maps::FPSController(&map, fullScreen);
+  controller->setCameraOrigin({4.0f, 4.0f, 2.0f});
+  controller->setRotationAngle(270.0f);
   TP_UNUSED(controller);
 
   map.addLayer(new tp_maps::GridLayer());
