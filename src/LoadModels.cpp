@@ -29,7 +29,7 @@ void loadModels(tp_maps::Map* map)
   //files. Modify the functions to suit your needs.
 
   //Loads a model of a bunny from a resource file.
-  loadPLYFromResource(map, "/example_maps_fps/bunny.ply");
+  //loadPLYFromResource(map, "/example_maps_fps/bunny.ply");
 
   //Load a point cloud from file.
   //loadPointCloudFromFile(map, "path/to/point_cloud.json", {1, 0, 0, 1}, 2.0f);
@@ -38,7 +38,7 @@ void loadModels(tp_maps::Map* map)
   //loadImageLayers(map, "path/to/directory/containing/image/layers/");
 
   //Load multiple geometry layers from a directory.
-  //loadGeometry3DLayers(map, "path/to/directory/containing/ply/files/");
+  loadGeometry3DLayers(map, "/home/tom/Desktop/wph_model_ply_21_01_2019/");
 }
 
 //##################################################################################################
@@ -196,6 +196,11 @@ void loadGeometry3DLayers(tp_maps::Map* map, const std::string& path)
 
     //Load a texture to texture the model with.
     auto colorMap = tp_image_utils::loadImage(image);
+
+#if 0
+    colorMap = colorMap.flipped();
+#endif
+
     tpWarning() << colorMap.width() << " " << colorMap.height();
 
     tp_maps::TextureData textureData;
