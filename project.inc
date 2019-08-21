@@ -9,3 +9,7 @@
 # LIBRARYPATHS += /usr/local/Cellar/sdl2/2.0.8/lib/
 # LIBRARYPATHS += /usr/local/Cellar/freeimage/3.18.0/lib/
 # LIBRARYPATHS += /usr/local/Cellar/boost/1.68.0/lib/
+
+#Windows
+# INCLUDEPATH  += C:\FreeImage\Dist\x32
+# LIBRARYPATHS += C:\FreeImage\Dist\x32
