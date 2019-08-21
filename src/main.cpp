@@ -18,7 +18,7 @@ int main()
   tp_utils_filesystem::init();
   tp_image_utils_freeimage::init();
 
-  bool fullScreen = true;
+  bool fullScreen = false;
 
   tp_maps_sdl::Map map(true, fullScreen, "TP Maps FPS Example");
   map.setBackgroundColor({0.0f, 0.0f, 0.0f});
