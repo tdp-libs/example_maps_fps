@@ -38,7 +38,7 @@ void loadModels(tp_maps::Map* map)
   //loadImageLayers(map, "path/to/directory/containing/image/layers/");
 
   //Load multiple geometry layers from a directory.
-  //loadGeometry3DLayers(map, "/home/tom/Desktop/wph_model_ply_21_01_2019/");
+  //loadGeometry3DLayers(map, "path/to/directory/containing/ply/files/");
 }
 
 //##################################################################################################
