@@ -5,12 +5,14 @@ SUBDIRS += lib_base64
 SUBDIRS += lib_earcut
 SUBDIRS += lib_clipper
 SUBDIRS += lib_tinyply
+SUBDIRS += lib_obj_loader
 
 SUBDIRS += tp_utils
 SUBDIRS += tp_utils_filesystem
 SUBDIRS += tp_triangulation
 SUBDIRS += tp_math_utils
 SUBDIRS += tp_ply
+SUBDIRS += tp_obj
 SUBDIRS += tp_maps
 SUBDIRS += tp_maps_sdl
 SUBDIRS += tp_image_utils

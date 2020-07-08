@@ -10,6 +10,8 @@
 
 #include "tp_ply/ReadPLY.h"
 
+#include "tp_obj/ReadOBJ.h"
+
 #include "tp_math_utils/Geometry3D.h"
 #include "tp_math_utils/JSONUtils.h"
 
@@ -29,7 +31,7 @@ void loadModels(tp_maps::Map* map)
   //files. Modify the functions to suit your needs.
 
   //Loads a model of a bunny from a resource file.
-  loadPLYFromResource(map, "/example_maps_fps/bunny.ply");
+  //loadPLYFromResource(map, "/example_maps_fps/bunny.ply");
 
   //Load a point cloud from file.
   //loadPointCloudFromFile(map, "path/to/point_cloud.json", {1, 0, 0, 1}, 2.0f);
@@ -39,6 +41,17 @@ void loadModels(tp_maps::Map* map)
 
   //Load multiple geometry layers from a directory.
   //loadGeometry3DLayers(map, "path/to/directory/containing/ply/files/");
+
+  //loadOBJFromFile(map, "/home/tom/Downloads/Penguin/PenguinBaseMesh.obj");
+  //loadOBJFromFile(map, "/home/tom/Downloads/HangingLight/HangingLight.obj");
+  //loadOBJFromFile(map, "/home/tom/Downloads/old_barrel/old_barrel_final.obj");
+  //loadOBJFromFile(map, "/home/tom/Downloads/CashRegister/Register.obj");
+  //loadOBJFromFile(map, "/home/tom/Downloads/Futuristic_Transport_Shuttle_Rigged/Transport Shuttle_obj.obj");
+  //loadOBJFromFile(map, "/home/tom/Downloads/Futuristic_Car_Game-Ready/obj/Futuristic_Car_2.1_obj.obj");
+  //loadOBJFromFile(map, "/home/tom/Downloads/Fireplace/Obj/fireplace.obj");
+  //loadOBJFromFile(map, "/home/tom/Downloads/Cobblestones3/Files/untitled.obj");
+  //loadOBJFromFile(map, "/home/tom/Downloads/MONARCH/MONARCH.OBJ");
+  //loadOBJFromFile(map, "/home/tom/Downloads/crocodile/CROCODIL.obj");
 }
 
 //##################################################################################################
@@ -217,6 +230,35 @@ void loadGeometry3DLayers(tp_maps::Map* map, const std::string& path)
     layer->setShaderType(tp_maps::Geometry3DLayer::ShaderType::Image);
     map->addLayer(layer);
   }
+}
+
+
+//##################################################################################################
+void loadOBJFromFile(tp_maps::Map* map, const std::string& path)
+{
+  //Read the contents of the OBJ file into a tp_maps::Geometry3D object.
+  std::string error;
+  std::vector<tp_maps::Geometry3D> geometry;
+  tp_obj::readOBJFile(path,
+                      error,
+                      GL_TRIANGLE_FAN,
+                      GL_TRIANGLE_STRIP,
+                      GL_TRIANGLES,
+                      true,
+                      geometry);
+
+  //Display the object in the map.
+  auto layer = new tp_maps::Geometry3DLayer();
+  layer->setGeometry(geometry);
+  layer->setShaderType(tp_maps::Geometry3DLayer::ShaderType::Material);
+  map->addLayer(layer);
+
+  //Position rotate and scale the object.
+  glm::mat4 m(1.0f);
+  m = glm::translate(m, {1.0f, 1.0f, -0.30f});
+  m = glm::scale(m, {1.0f, 1.0f, 1.0f});
+  m = glm::rotate(m, glm::radians(90.0f), {1.0f, 0.0f, 0.0f});
+  layer->setObjectMatrix(m);
 }
 
 }

@@ -21,7 +21,7 @@ int main()
   bool fullScreen = true;
 
   tp_maps_sdl::Map map(true, fullScreen, "TP Maps FPS Example");
-  map.setBackgroundColor({0.0f, 0.0f, 0.0f});
+  map.setBackgroundColor({0.2f, 0.2f, 0.2f});
 
   auto controller = new tp_maps::FPSController(&map, fullScreen);
   controller->setCameraOrigin({4.0f, 4.0f, 2.0f});
