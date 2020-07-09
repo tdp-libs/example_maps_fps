@@ -42,16 +42,16 @@ void loadModels(tp_maps::Map* map)
   //Load multiple geometry layers from a directory.
   //loadGeometry3DLayers(map, "path/to/directory/containing/ply/files/");
 
-  //loadOBJFromFile(map, "/home/tom/Downloads/Penguin/PenguinBaseMesh.obj");
-  //loadOBJFromFile(map, "/home/tom/Downloads/HangingLight/HangingLight.obj");
-  //loadOBJFromFile(map, "/home/tom/Downloads/old_barrel/old_barrel_final.obj");
-  //loadOBJFromFile(map, "/home/tom/Downloads/CashRegister/Register.obj");
-  //loadOBJFromFile(map, "/home/tom/Downloads/Futuristic_Transport_Shuttle_Rigged/Transport Shuttle_obj.obj");
-  //loadOBJFromFile(map, "/home/tom/Downloads/Futuristic_Car_Game-Ready/obj/Futuristic_Car_2.1_obj.obj");
-  //loadOBJFromFile(map, "/home/tom/Downloads/Fireplace/Obj/fireplace.obj");
-  //loadOBJFromFile(map, "/home/tom/Downloads/Cobblestones3/Files/untitled.obj");
-  //loadOBJFromFile(map, "/home/tom/Downloads/MONARCH/MONARCH.OBJ");
-  //loadOBJFromFile(map, "/home/tom/Downloads/crocodile/CROCODIL.obj");
+  //loadOBJFromFile(map, "/home/tom/Downloads/Penguin/PenguinBaseMesh.obj", 1.0f);
+  //loadOBJFromFile(map, "/home/tom/Downloads/HangingLight/HangingLight.obj", 50.0f);
+  //loadOBJFromFile(map, "/home/tom/Downloads/old_barrel/old_barrel_final.obj", 1.0f);
+  //loadOBJFromFile(map, "/home/tom/Downloads/CashRegister/Register.obj", 1.0f);
+  //loadOBJFromFile(map, "/home/tom/Downloads/Futuristic_Transport_Shuttle_Rigged/Transport Shuttle_obj.obj", 1.0f);
+  //loadOBJFromFile(map, "/home/tom/Downloads/Futuristic_Car_Game-Ready/obj/Futuristic_Car_2.1_obj.obj", 1.0f);
+  loadOBJFromFile(map, "/home/tom/Downloads/Fireplace/Obj/fireplace.obj", 0.1f);
+  //loadOBJFromFile(map, "/home/tom/Downloads/Cobblestones3/Files/untitled.obj", 1.0f);
+  //loadOBJFromFile(map, "/home/tom/Downloads/MONARCH/MONARCH.OBJ", 1.0f);
+  //loadOBJFromFile(map, "/home/tom/Downloads/crocodile/CROCODIL.obj", 1.0f);
 }
 
 //##################################################################################################
@@ -206,6 +206,7 @@ void loadGeometry3DLayers(tp_maps::Map* map, const std::string& path)
                         geometry.front().geometry);
 
     geometry.front().material.alpha = 0.5f;
+    geometry.front().material.ambientTexture = "Image";
 
     //Load a texture to texture the model with.
     auto colorMap = tp_image_utils::loadImage(image);
@@ -225,7 +226,8 @@ void loadGeometry3DLayers(tp_maps::Map* map, const std::string& path)
     texture->setMinFilterOption(GL_NEAREST);
 
     //Add the model to the map.
-    auto layer = new tp_maps::Geometry3DLayer(texture);
+    auto layer = new tp_maps::Geometry3DLayer();
+    layer->setTextures({{"Image", texture}});
     layer->setGeometry(geometry);
     layer->setShaderType(tp_maps::Geometry3DLayer::ShaderType::Image);
     map->addLayer(layer);
@@ -234,11 +236,12 @@ void loadGeometry3DLayers(tp_maps::Map* map, const std::string& path)
 
 
 //##################################################################################################
-void loadOBJFromFile(tp_maps::Map* map, const std::string& path)
+void loadOBJFromFile(tp_maps::Map* map, const std::string& path, float scale)
 {
   //Read the contents of the OBJ file into a tp_maps::Geometry3D object.
   std::string error;
   std::vector<tp_maps::Geometry3D> geometry;
+
   tp_obj::readOBJFile(path,
                       error,
                       GL_TRIANGLE_FAN,
@@ -247,16 +250,57 @@ void loadOBJFromFile(tp_maps::Map* map, const std::string& path)
                       true,
                       geometry);
 
+  std::unordered_map<tp_utils::StringID, std::string> texturePaths;
+  for(const auto& g : geometry)
+  {
+    auto addTexture = [&](const tp_utils::StringID& name)
+    {
+      if(!name.isValid())
+        return;
+
+      if(tpContainsKey(texturePaths, name))
+        return;
+
+      texturePaths[name] = tp_obj::getAssociatedFilePath(path, name.keyString());
+    };
+
+    addTexture(g.material.ambientTexture);
+    addTexture(g.material.diffuseTexture);
+    addTexture(g.material.specularTexture);
+    addTexture(g.material.alphaTexture);
+    addTexture(g.material.bumpTexture);
+  }
+
+  std::unordered_map<tp_utils::StringID, tp_maps::Texture*> textures;
+  for(const auto& i : texturePaths)
+  {
+    auto colorMap = tp_image_utils::loadImage(i.second);
+
+    //colorMap = colorMap.flipped();
+    tpWarning() << "Loading texture: " << i.second << " w:" << colorMap.width() << " h:" << colorMap.height();
+
+    tp_maps::TextureData textureData;
+    textureData.w = colorMap.width();
+    textureData.h = colorMap.height();
+    textureData.data = reinterpret_cast<TPPixel*>(colorMap.data());
+    auto texture = new tp_maps::BasicTexture(map, textureData);
+    texture->setMagFilterOption(GL_LINEAR);
+    texture->setMinFilterOption(GL_LINEAR);
+
+    textures[i.first] = texture;
+  }
+
   //Display the object in the map.
   auto layer = new tp_maps::Geometry3DLayer();
   layer->setGeometry(geometry);
+  layer->setTextures(textures);
   layer->setShaderType(tp_maps::Geometry3DLayer::ShaderType::Material);
   map->addLayer(layer);
 
   //Position rotate and scale the object.
   glm::mat4 m(1.0f);
   m = glm::translate(m, {1.0f, 1.0f, -0.30f});
-  m = glm::scale(m, {1.0f, 1.0f, 1.0f});
+  m = glm::scale(m, {scale, scale, scale});
   m = glm::rotate(m, glm::radians(90.0f), {1.0f, 0.0f, 0.0f});
   layer->setObjectMatrix(m);
 }

@@ -30,7 +30,7 @@ void loadImageLayers(tp_maps::Map* map, const std::string& path);
 void loadGeometry3DLayers(tp_maps::Map* map, const std::string& path);
 
 //##################################################################################################
-void loadOBJFromFile(tp_maps::Map* map, const std::string& path);
+void loadOBJFromFile(tp_maps::Map* map, const std::string& path, float scale);
 
 }
 
