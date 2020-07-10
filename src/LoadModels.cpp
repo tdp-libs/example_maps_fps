@@ -46,9 +46,9 @@ void loadModels(tp_maps::Map* map)
   //loadOBJFromFile(map, "/home/tom/Downloads/HangingLight/HangingLight.obj", 50.0f);
   //loadOBJFromFile(map, "/home/tom/Downloads/old_barrel/old_barrel_final.obj", 1.0f);
   //loadOBJFromFile(map, "/home/tom/Downloads/CashRegister/Register.obj", 1.0f);
-  //loadOBJFromFile(map, "/home/tom/Downloads/Futuristic_Transport_Shuttle_Rigged/Transport Shuttle_obj.obj", 1.0f);
+  loadOBJFromFile(map, "/home/tom/Downloads/Futuristic_Transport_Shuttle_Rigged/Transport Shuttle_obj.obj", 1.0f);
   //loadOBJFromFile(map, "/home/tom/Downloads/Futuristic_Car_Game-Ready/obj/Futuristic_Car_2.1_obj.obj", 1.0f);
-  loadOBJFromFile(map, "/home/tom/Downloads/Fireplace/Obj/fireplace.obj", 0.1f);
+  //loadOBJFromFile(map, "/home/tom/Downloads/Fireplace/Obj/fireplace.obj", 0.1f);
   //loadOBJFromFile(map, "/home/tom/Downloads/Cobblestones3/Files/untitled.obj", 1.0f);
   //loadOBJFromFile(map, "/home/tom/Downloads/MONARCH/MONARCH.OBJ", 1.0f);
   //loadOBJFromFile(map, "/home/tom/Downloads/crocodile/CROCODIL.obj", 1.0f);
