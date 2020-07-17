@@ -1,9 +1,10 @@
-#include "example_maps_fps/LoadModels.h"
+﻿#include "example_maps_fps/LoadModels.h"
 
 #include "tp_maps/Map.h"
 #include "tp_maps/layers/ImageLayer.h"
 #include "tp_maps/layers/Geometry3DLayer.h"
 #include "tp_maps/layers/PointsLayer.h"
+#include "tp_maps/layers/LinesLayer.h"
 #include "tp_maps/textures/DefaultSpritesTexture.h"
 
 #include "tp_image_utils/LoadImages.h"
@@ -20,6 +21,8 @@
 #include "tp_utils/Resources.h"
 
 #include "glm/gtc/matrix_transform.hpp"
+
+#define DRAW_NORMALS 0
 
 namespace example_maps_fps
 {
@@ -42,15 +45,16 @@ void loadModels(tp_maps::Map* map)
   //Load multiple geometry layers from a directory.
   //loadGeometry3DLayers(map, "path/to/directory/containing/ply/files/");
 
-  //loadOBJFromFile(map, "/home/tom/Downloads/Penguin/PenguinBaseMesh.obj", 1.0f);
-  //loadOBJFromFile(map, "/home/tom/Downloads/HangingLight/HangingLight.obj", 50.0f);
   //loadOBJFromFile(map, "/home/tom/Downloads/old_barrel/old_barrel_final.obj", 1.0f);
   //loadOBJFromFile(map, "/home/tom/Downloads/CashRegister/Register.obj", 1.0f);
+
+  //loadOBJFromFile(map, "/home/tom/Downloads/Penguin/PenguinBaseMesh.obj", 1.0f);
+  //loadOBJFromFile(map, "/home/tom/Downloads/HangingLight/HangingLight.obj", 50.0f);
   loadOBJFromFile(map, "/home/tom/Downloads/Futuristic_Transport_Shuttle_Rigged/Transport Shuttle_obj.obj", 1.0f);
-  //loadOBJFromFile(map, "/home/tom/Downloads/Futuristic_Car_Game-Ready/obj/Futuristic_Car_2.1_obj.obj", 1.0f);
+  //loadOBJFromFile(map, "/home/tom/Downloads/Futuristic_Car_Game-Ready/obj/Futuristic_Car_2.1.obj", 1.0f);
   //loadOBJFromFile(map, "/home/tom/Downloads/Fireplace/Obj/fireplace.obj", 0.1f);
   //loadOBJFromFile(map, "/home/tom/Downloads/Cobblestones3/Files/untitled.obj", 1.0f);
-  //loadOBJFromFile(map, "/home/tom/Downloads/MONARCH/MONARCH.OBJ", 1.0f);
+  //loadOBJFromFile(map, "/home/tom/Downloads/MONARCH/monarch.obj", 50.0f);
   //loadOBJFromFile(map, "/home/tom/Downloads/crocodile/CROCODIL.obj", 1.0f);
 }
 
@@ -80,6 +84,7 @@ void loadPLYFromResource(tp_maps::Map* map, const std::string& resourceName)
                         object.geometry);
 
   object.geometry.calculateFaceNormals();
+  //object.geometry.calculateVertexNormals();
   object.material.alpha = 1.0f;
 
   //Display the object in the map.
@@ -94,6 +99,13 @@ void loadPLYFromResource(tp_maps::Map* map, const std::string& resourceName)
   m = glm::scale(m, {10.0f, 10.0f, 10.0f});
   m = glm::rotate(m, glm::radians(90.0f), {1.0f, 0.0f, 0.0f});
   layer->setObjectMatrix(m);
+
+#if DRAW_NORMALS
+  auto linesLayer = new tp_maps::LinesLayer();
+  linesLayer->setLinesFromGeometryNormals(geometry, 0.0004f);
+  linesLayer->setObjectMatrix(m);
+  map->addLayer(linesLayer);
+#endif
 }
 
 //##################################################################################################
@@ -251,8 +263,10 @@ void loadOBJFromFile(tp_maps::Map* map, const std::string& path, float scale)
                       geometry);
 
   std::unordered_map<tp_utils::StringID, std::string> texturePaths;
-  for(const auto& g : geometry)
+  for(auto& g : geometry)
   {
+    g.geometry.calculateTangentsAndBitangents();
+
     auto addTexture = [&](const tp_utils::StringID& name)
     {
       if(!name.isValid())
@@ -285,7 +299,7 @@ void loadOBJFromFile(tp_maps::Map* map, const std::string& path, float scale)
     textureData.data = reinterpret_cast<TPPixel*>(colorMap.data());
     auto texture = new tp_maps::BasicTexture(map, textureData);
     texture->setMagFilterOption(GL_LINEAR);
-    texture->setMinFilterOption(GL_LINEAR);
+    texture->setMinFilterOption(GL_LINEAR_MIPMAP_LINEAR);
 
     textures[i.first] = texture;
   }
@@ -297,12 +311,43 @@ void loadOBJFromFile(tp_maps::Map* map, const std::string& path, float scale)
   layer->setShaderType(tp_maps::Geometry3DLayer::ShaderType::Material);
   map->addLayer(layer);
 
-  //Position rotate and scale the object.
   glm::mat4 m(1.0f);
   m = glm::translate(m, {1.0f, 1.0f, -0.30f});
   m = glm::scale(m, {scale, scale, scale});
   m = glm::rotate(m, glm::radians(90.0f), {1.0f, 0.0f, 0.0f});
   layer->setObjectMatrix(m);
+
+#if DRAW_NORMALS
+  auto linesLayer = new tp_maps::LinesLayer();
+  linesLayer->setLinesFromGeometryNormals(geometry, 0.04f);
+  linesLayer->setObjectMatrix(m);
+  map->addLayer(linesLayer);
+#endif
+
+  //Position rotate and scale the object.
+//  {
+//    float angle=90.0;
+//    double prevTimestampMS=-1.0;
+//    layer->animateCallbacks.addCallback([=](double timestampMS) mutable
+//    {
+//      if(prevTimestampMS<0.0)
+//        prevTimestampMS = timestampMS;
+
+//      glm::mat4 m(1.0f);
+//      m = glm::translate(m, {1.0f, 1.0f, -0.30f});
+//      m = glm::scale(m, {scale, scale, scale});
+//      m = glm::rotate(m, glm::radians(float(angle)), {1.0f, 0.0f, 0.0f});
+//      layer->setObjectMatrix(m);
+//      float degPerSecond=5;
+//      angle += (degPerSecond/1000)*float(timestampMS-prevTimestampMS);
+//      if(angle>=360.0f)
+//        angle=0.0f;
+
+//      prevTimestampMS = timestampMS;
+//    });
+//  }
+
+
 }
 
 }
