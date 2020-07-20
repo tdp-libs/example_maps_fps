@@ -34,7 +34,7 @@ void loadModels(tp_maps::Map* map)
   //files. Modify the functions to suit your needs.
 
   //Loads a model of a bunny from a resource file.
-  //loadPLYFromResource(map, "/example_maps_fps/bunny.ply");
+  loadPLYFromResource(map, "/example_maps_fps/bunny.ply");
 
   //Load a point cloud from file.
   //loadPointCloudFromFile(map, "path/to/point_cloud.json", {1, 0, 0, 1}, 2.0f);
@@ -50,7 +50,7 @@ void loadModels(tp_maps::Map* map)
 
   //loadOBJFromFile(map, "/home/tom/Downloads/Penguin/PenguinBaseMesh.obj", 1.0f);
   //loadOBJFromFile(map, "/home/tom/Downloads/HangingLight/HangingLight.obj", 50.0f);
-  loadOBJFromFile(map, "/home/tom/Downloads/Futuristic_Transport_Shuttle_Rigged/Transport Shuttle_obj.obj", 1.0f);
+  //loadOBJFromFile(map, "/home/tom/Downloads/Futuristic_Transport_Shuttle_Rigged/Transport Shuttle_obj.obj", 1.0f);
   //loadOBJFromFile(map, "/home/tom/Downloads/Futuristic_Car_Game-Ready/obj/Futuristic_Car_2.1.obj", 1.0f);
   //loadOBJFromFile(map, "/home/tom/Downloads/Fireplace/Obj/fireplace.obj", 0.1f);
   //loadOBJFromFile(map, "/home/tom/Downloads/Cobblestones3/Files/untitled.obj", 1.0f);
@@ -265,6 +265,7 @@ void loadOBJFromFile(tp_maps::Map* map, const std::string& path, float scale)
   std::unordered_map<tp_utils::StringID, std::string> texturePaths;
   for(auto& g : geometry)
   {
+    //g.geometry.calculateVertexNormals();
     g.geometry.calculateTangentsAndBitangents();
 
     auto addTexture = [&](const tp_utils::StringID& name)
@@ -300,6 +301,8 @@ void loadOBJFromFile(tp_maps::Map* map, const std::string& path, float scale)
     auto texture = new tp_maps::BasicTexture(map, textureData);
     texture->setMagFilterOption(GL_LINEAR);
     texture->setMinFilterOption(GL_LINEAR_MIPMAP_LINEAR);
+    texture->setTextureWrapS(GL_REPEAT);
+    texture->setTextureWrapT(GL_REPEAT);
 
     textures[i.first] = texture;
   }
@@ -319,7 +322,7 @@ void loadOBJFromFile(tp_maps::Map* map, const std::string& path, float scale)
 
 #if DRAW_NORMALS
   auto linesLayer = new tp_maps::LinesLayer();
-  linesLayer->setLinesFromGeometryNormals(geometry, 0.04f);
+  linesLayer->setLinesFromGeometryNormals(geometry, 0.01f);
   linesLayer->setObjectMatrix(m);
   map->addLayer(linesLayer);
 #endif

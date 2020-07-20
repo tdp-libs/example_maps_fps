@@ -40,7 +40,7 @@ int main()
   controller->setRotationAngle(270.0f);
   TP_UNUSED(controller);
 
-  map.addLayer(new tp_maps::GridLayer());
+  //map.addLayer(new tp_maps::GridLayer());
   map.addLayer(new tp_maps::FBOLayer(tp_maps::FBOLayerSource::LightDepth, 0));
 
   example_maps_fps::loadModels(&map);
