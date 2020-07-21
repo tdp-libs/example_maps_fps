@@ -41,7 +41,7 @@ int main()
   TP_UNUSED(controller);
 
   //map.addLayer(new tp_maps::GridLayer());
-  map.addLayer(new tp_maps::FBOLayer(tp_maps::FBOLayerSource::LightColor, 0));
+  //map.addLayer(new tp_maps::FBOLayer(tp_maps::FBOLayerSource::LightColor, 0));
 
   example_maps_fps::loadModels(&map);
 
