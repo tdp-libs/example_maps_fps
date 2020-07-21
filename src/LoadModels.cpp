@@ -34,7 +34,7 @@ void loadModels(tp_maps::Map* map)
   //files. Modify the functions to suit your needs.
 
   //Loads a model of a bunny from a resource file.
-  loadPLYFromResource(map, "/example_maps_fps/bunny.ply");
+  //loadPLYFromResource(map, "/example_maps_fps/bunny.ply");
 
   //Load a point cloud from file.
   //loadPointCloudFromFile(map, "path/to/point_cloud.json", {1, 0, 0, 1}, 2.0f);
@@ -56,6 +56,9 @@ void loadModels(tp_maps::Map* map)
   //loadOBJFromFile(map, "/home/tom/Downloads/Cobblestones3/Files/untitled.obj", 1.0f);
   //loadOBJFromFile(map, "/home/tom/Downloads/MONARCH/monarch.obj", 50.0f);
   //loadOBJFromFile(map, "/home/tom/Downloads/crocodile/CROCODIL.obj", 1.0f);
+
+  loadOBJFromFile(map, "/home/tom/Desktop/scene/anim_pack_19_F1.obj", 1.0f);
+  loadOBJFromFile(map, "/home/tom/Desktop/scene/anim_pack_19_F2.obj", 1.0f);
 }
 
 //##################################################################################################
@@ -265,6 +268,16 @@ void loadOBJFromFile(tp_maps::Map* map, const std::string& path, float scale)
   std::unordered_map<tp_utils::StringID, std::string> texturePaths;
   for(auto& g : geometry)
   {
+    // Hack to move the Kiwi
+    if(tpContains(g.geometry.comments, "AM130_015_005_Mesh.013") || tpContains(g.geometry.comments, "AM130_015_003_Mesh.014"))
+    {
+      for(auto& vert : g.geometry.verts)
+      {
+        vert.vert.x +=  0.2f;
+        vert.vert.z += -1.0f;
+      }
+    }
+
     //g.geometry.calculateVertexNormals();
     g.geometry.calculateTangentsAndBitangents();
 
@@ -300,7 +313,7 @@ void loadOBJFromFile(tp_maps::Map* map, const std::string& path, float scale)
     textureData.data = reinterpret_cast<TPPixel*>(colorMap.data());
     auto texture = new tp_maps::BasicTexture(map, textureData);
     texture->setMagFilterOption(GL_LINEAR);
-    texture->setMinFilterOption(GL_LINEAR_MIPMAP_LINEAR);
+    texture->setMinFilterOption(GL_LINEAR);
     texture->setTextureWrapS(GL_REPEAT);
     texture->setTextureWrapT(GL_REPEAT);
 

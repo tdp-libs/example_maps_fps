@@ -19,7 +19,7 @@ int main()
   tp_utils_filesystem::init();
   tp_image_utils_freeimage::init();
 
-  bool fullScreen = true;
+  bool fullScreen = false;
 
   tp_maps_sdl::Map map(true, fullScreen, "TP Maps FPS Example");
   map.setBackgroundColor({0.2f, 0.2f, 0.2f});
@@ -41,7 +41,7 @@ int main()
   TP_UNUSED(controller);
 
   //map.addLayer(new tp_maps::GridLayer());
-  map.addLayer(new tp_maps::FBOLayer(tp_maps::FBOLayerSource::LightDepth, 0));
+  map.addLayer(new tp_maps::FBOLayer(tp_maps::FBOLayerSource::LightColor, 0));
 
   example_maps_fps::loadModels(&map);
 
