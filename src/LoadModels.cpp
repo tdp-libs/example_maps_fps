@@ -58,7 +58,9 @@ void loadModels(tp_maps::Map* map)
   //loadOBJFromFile(map, "/home/tom/Downloads/crocodile/CROCODIL.obj", 1.0f);
 
   //loadOBJFromFile(map, "/Users/tom/scene/anim_pack_19_F1.obj", 1.0f);
-  loadOBJFromFile(map, "/Users/tom/scene/anim_pack_19_F2.obj", 1.0f);
+  //loadOBJFromFile(map, "/Users/tom/scene/anim_pack_19_F2.obj", 1.0f);
+  //loadOBJFromFile(map, "/home/tom/Desktop/scene/anim_pack_19_F1.obj", 1.0f);
+  loadOBJFromFile(map, "/home/tom/Desktop/scene/anim_pack_19_F2.obj", 1.0f);
 }
 
 //##################################################################################################

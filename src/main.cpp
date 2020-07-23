@@ -26,11 +26,11 @@ int main()
 
   map.setRenderPasses({
                         tp_maps::RenderPass::LightFBOs,
-                        tp_maps::RenderPass::ReflectionFBO,
+                        //tp_maps::RenderPass::ReflectionFBO,
                         tp_maps::RenderPass::Background,
                         tp_maps::RenderPass::Normal,
                         tp_maps::RenderPass::Transparency,
-                        tp_maps::RenderPass::Reflection,
+                        //tp_maps::RenderPass::Reflection,
                         tp_maps::RenderPass::Text,
                         tp_maps::RenderPass::GUI
                       });
@@ -41,7 +41,8 @@ int main()
   TP_UNUSED(controller);
 
   //map.addLayer(new tp_maps::GridLayer());
-  //map.addLayer(new tp_maps::FBOLayer(tp_maps::FBOLayerSource::LightColor, 0));
+  map.addLayer(new tp_maps::FBOLayer(tp_maps::FBOLayerSource::LightColor, 0, {0.05f, 0.75f}, {0.20f, 0.20f}));
+  map.addLayer(new tp_maps::FBOLayer(tp_maps::FBOLayerSource::LightColor, 1, {0.75f, 0.75f}, {0.20f, 0.20f}));
 
   example_maps_fps::loadModels(&map);
 
